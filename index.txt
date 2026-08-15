@@ -1,0 +1,16 @@
+# ZapczOS package index
+# name|version|size|category|description
+
+hello|1.0|2316|Template|Starter template listing every builtin
+raycast|1.0|7958|Graphics|First-person maze raycaster, fixed point
+mandel|1.0|3989|Graphics|Mandelbrot explorer, pan and zoom, no FPU
+plasma|1.0|3098|Graphics|Animated demoscene plasma effect
+sortviz|1.0|4978|Graphics|Sorting algorithm visualizer with stats
+breakout|1.0|5423|Games|Paddle, ball and bricks with sound
+sokoban|1.0|9476|Games|Push crates onto goals, loads SOKO.TXT
+simon|1.0|3789|Games|Memory game using the PC speaker
+hangman|1.0|4604|Games|Guess the computing word
+hexview|1.0|11469|Tools|Hex dump any file on the disk
+textadv|1.0|7988|Tools|The Kernel Escape, a text adventure
+rpncalc|1.0|5237|Tools|Reverse polish calculator
+sysbench|1.0|8053|Tools|Benchmark ZapCC generated code

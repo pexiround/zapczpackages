@@ -1,0 +1,32 @@
+int main() {
+    print_line("Hello from a ZapczOS package.");
+    print_line("");
+    print_line("This file is the template. Every builtin the");
+    print_line("runtime gives you is listed below. Copy it,");
+    print_line("change it, compile with:  zapcc MYAPP.C");
+    print_line("");
+    print_line("OUTPUT");
+    print_line("  print(s) print_int(n) put_char(c) print_line(s) clear()");
+    print_line("INPUT");
+    print_line("  get_key()      blocks until a key, returns the code");
+    print_line("  key_down()     returns a key or 0, never blocks");
+    print_line("  read_line(buf,max)  reads a whole typed line");
+    print_line("FILES");
+    print_line("  file_read(name,buf,max)   file_write(name,buf,len)");
+    print_line("  file_size(name)  file_exists(name)  file_delete(name)");
+    print_line("CANVAS");
+    print_line("  canvas_init(w,h)  canvas_width()  canvas_height()");
+    print_line("  plot(x,y,r,g,b)   canvas_rect(x,y,w,h,r,g,b)");
+    print_line("  canvas_clear(r,g,b)  canvas_present()");
+    print_line("MATH / MISC");
+    print_line("  abs min max sqrt pow rand srand ticks sleep");
+    print_line("  strlen strcmp strcpy strcat memset memcpy");
+    print_line("  beep(freq,ms)  sound_off()");
+    print_line("");
+    print_line("KEY CODES  up=200 down=201 left=202 right=203");
+    print_line("           esc=27 enter=10 backspace=8");
+    print_line("");
+    print_line("NOTE: integers only, no float. No 2D arrays --");
+    print_line("      use grid[y * WIDTH + x] instead.");
+    return 0;
+}
