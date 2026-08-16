@@ -6,6 +6,8 @@ raycast|1.0|7958|Graphics|First-person maze raycaster, fixed point
 mandel|1.0|3989|Graphics|Mandelbrot explorer, pan and zoom, no FPU
 plasma|1.0|3098|Graphics|Animated demoscene plasma effect
 sortviz|1.0|4978|Graphics|Sorting algorithm visualizer with stats
+maze|1.0|20119|Graphics|Maze generator plus breadth-first solver
+chess|1.0|20395|Games|Chess engine, alpha-beta search, 3 ply
 breakout|1.0|5423|Games|Paddle, ball and bricks with sound
 sokoban|1.0|9476|Games|Push crates onto goals, loads SOKO.TXT
 simon|1.0|3789|Games|Memory game using the PC speaker

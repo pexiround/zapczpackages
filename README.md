@@ -20,11 +20,16 @@ zaprun NAME.ZAP       run an installed package
 
 ## Layout
 
-| path            | what it is                                        |
-|-----------------|---------------------------------------------------|
-| `index.txt`     | the catalog the OS fetches first                  |
-| `packages/*.ZAP`| compiled package binaries                         |
-| `src/*.c`       | the C source for every package, so it's inspectable |
+Everything lives in the repository root:
+
+| path         | what it is                                          |
+|--------------|-----------------------------------------------------|
+| `index.txt`  | the catalog the OS fetches first                     |
+| `*.ZAP`      | compiled package binaries                            |
+| `*.c`        | the C source for every package, so it's inspectable  |
+
+The OS looks for `NAME.ZAP` in the root first and falls back to
+`packages/NAME.ZAP`, so either layout works.
 
 ## index.txt format
 
@@ -35,11 +40,13 @@ name|version|size|category|description
 ```
 
 `name` must be 8 characters or fewer — it becomes an 8.3 filename on disk
-(`raycast` -> `RAYCAST.ZAP`).
+(`raycast` -> `RAYCAST.ZAP`). The `size` field must match the file exactly;
+the OS checks it and refuses the install if it doesn't, which catches a
+corrupted upload.
 
 ## Writing your own package
 
-Start from `src/hello.c`, which lists every builtin the runtime provides.
+Start from `hello.c`, which lists every builtin the runtime provides.
 Compile it inside ZapczOS:
 
 ```
@@ -47,7 +54,7 @@ zapcc MYAPP.C          produces MYAPP.ZAP
 zaprun MYAPP.ZAP       run it
 ```
 
-Then drop the `.ZAP` in `packages/`, add a line to `index.txt`, and push.
+Then drop the `.ZAP` in the repo root, add a line to `index.txt`, and push.
 
 ### Language notes
 
@@ -59,7 +66,9 @@ operators and control flow. It does **not** have:
 * `switch` — use `if` / `else if`
 * function pointers
 
-Limits are 64 KB of code and 16 KB of data per package.
+Limits are 64 KB of code and **16 KB of static data** per package. The data
+limit is the one you will hit first: six 1000-entry `int` arrays already
+exceed it. Pack coordinates into a single index array when you need to.
 
 ## Packages
 
@@ -70,6 +79,8 @@ Limits are 64 KB of code and 16 KB of data per package.
 | mandel | Graphics | Mandelbrot explorer, pan and zoom, no FPU |
 | plasma | Graphics | Animated demoscene plasma effect |
 | sortviz | Graphics | Sorting algorithm visualizer with stats |
+| maze | Graphics | Maze generator plus breadth-first solver |
+| chess | Games | Chess engine, alpha-beta search, 3 ply |
 | breakout | Games | Paddle, ball and bricks with sound |
 | sokoban | Games | Push crates onto goals, loads SOKO.TXT |
 | simon | Games | Memory game using the PC speaker |
