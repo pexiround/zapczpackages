@@ -28,7 +28,7 @@ Everything lives in the repository root:
 | `*.ZAP`      | compiled package binaries                            |
 | `*.c`        | the C source for every package, so it's inspectable  |
 
-The OS looks for `NAME.ZAP` in the root first and falls back to
+The OS looks for `NAME.ZAP` in the root first, and falls back to
 `packages/NAME.ZAP`, so either layout works.
 
 ## index.txt format
@@ -40,13 +40,11 @@ name|version|size|category|description
 ```
 
 `name` must be 8 characters or fewer — it becomes an 8.3 filename on disk
-(`raycast` -> `RAYCAST.ZAP`). The `size` field must match the file exactly;
-the OS checks it and refuses the install if it doesn't, which catches a
-corrupted upload.
+(`raycast` -> `RAYCAST.ZAP`).
 
 ## Writing your own package
 
-Start from `hello.c`, which lists every builtin the runtime provides.
+Start from `src/hello.c`, which lists every builtin the runtime provides.
 Compile it inside ZapczOS:
 
 ```
@@ -55,6 +53,8 @@ zaprun MYAPP.ZAP       run it
 ```
 
 Then drop the `.ZAP` in the repo root, add a line to `index.txt`, and push.
+The `size` field must match the file exactly -- the OS checks it and refuses
+the install if it doesn't, which catches a corrupted upload.
 
 ### Language notes
 
@@ -66,25 +66,26 @@ operators and control flow. It does **not** have:
 * `switch` — use `if` / `else if`
 * function pointers
 
-Limits are 64 KB of code and **16 KB of static data** per package. The data
-limit is the one you will hit first: six 1000-entry `int` arrays already
-exceed it. Pack coordinates into a single index array when you need to.
+Limits are 64 KB of code and 16 KB of data per package.
 
 ## Packages
 
 | name | category | what it does |
 |------|----------|--------------|
 | hello | Template | Starter template listing every builtin |
-| raycast | Graphics | First-person maze raycaster, fixed point |
+| raycast | Graphics | First-person maze raycaster, arrows or WASD |
 | mandel | Graphics | Mandelbrot explorer, pan and zoom, no FPU |
 | plasma | Graphics | Animated demoscene plasma effect |
+| fire | Graphics | Classic demoscene fire effect |
+| stars | Graphics | Starfield flythrough, W/S changes speed |
 | sortviz | Graphics | Sorting algorithm visualizer with stats |
 | maze | Graphics | Maze generator plus breadth-first solver |
-| chess | Games | Chess engine, alpha-beta search, 3 ply |
-| breakout | Games | Paddle, ball and bricks with sound |
-| sokoban | Games | Push crates onto goals, loads SOKO.TXT |
+| invaders | Games | Space shooter, A/D to move, space to fire |
+| breakout | Games | Paddle, ball and bricks, arrows or A/D |
+| sokoban | Games | Push crates onto goals, arrows or WASD |
 | simon | Games | Memory game using the PC speaker |
 | hangman | Games | Guess the computing word |
+| typing | Tools | Typing speed test, words per minute |
 | hexview | Tools | Hex dump any file on the disk |
 | textadv | Tools | The Kernel Escape, a text adventure |
 | rpncalc | Tools | Reverse polish calculator |

@@ -128,7 +128,7 @@ int main() {
     make_builtins();
 
     print_line("Sokoban -- push the crates onto the gold squares.");
-    print_line("arrows move, r restarts, esc quits");
+    print_line("arrows or WASD move, r restarts, esc quits");
     print_line("Tip: a file named SOKO.TXT on disk is loaded as a custom level.");
 
     if (file_exists("SOKO.TXT")) {
@@ -144,6 +144,10 @@ int main() {
     for (;;) {
         int k = get_key();
         if (k == 27) break;
+        if (k == 119 || k == 87) k = 200;
+        else if (k == 115 || k == 83) k = 201;
+        else if (k == 97 || k == 65) k = 202;
+        else if (k == 100 || k == 68) k = 203;
         if (k == 200) try_move(0, -1);
         else if (k == 201) try_move(0, 1);
         else if (k == 202) try_move(-1, 0);

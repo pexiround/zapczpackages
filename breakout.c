@@ -67,11 +67,13 @@ int main() {
     build_level();
     reset_ball();
 
-    print_line("Breakout -- left/right to move, esc to quit");
+    print_line("Breakout -- left/right or A/D to move, esc to quit");
 
     for (;;) {
         int k = key_down();
         if (k == 27) break;
+        if (k == 97 || k == 65) k = 202;   /* a */
+        if (k == 100 || k == 68) k = 203;  /* d */
         if (k == 202) paddle_x = paddle_x - 10;
         if (k == 203) paddle_x = paddle_x + 10;
         if (paddle_x < 0) paddle_x = 0;

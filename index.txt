@@ -2,16 +2,19 @@
 # name|version|size|category|description
 
 hello|1.0|2316|Template|Starter template listing every builtin
-raycast|1.0|7958|Graphics|First-person maze raycaster, fixed point
-mandel|1.0|3989|Graphics|Mandelbrot explorer, pan and zoom, no FPU
+raycast|1.1|8378|Graphics|First-person maze raycaster, arrows or WASD
+mandel|1.1|4402|Graphics|Mandelbrot explorer, pan and zoom, no FPU
 plasma|1.0|3098|Graphics|Animated demoscene plasma effect
+fire|1.0|13024|Graphics|Classic demoscene fire effect
+stars|1.0|5249|Graphics|Starfield flythrough, W/S changes speed
 sortviz|1.0|4978|Graphics|Sorting algorithm visualizer with stats
 maze|1.0|20119|Graphics|Maze generator plus breadth-first solver
-chess|1.0|20395|Games|Chess engine, alpha-beta search, 3 ply
-breakout|1.0|5423|Games|Paddle, ball and bricks with sound
-sokoban|1.0|9476|Games|Push crates onto goals, loads SOKO.TXT
+invaders|1.0|5863|Games|Space shooter, A/D to move, space to fire
+breakout|1.1|5626|Games|Paddle, ball and bricks, arrows or A/D
+sokoban|1.1|9896|Games|Push crates onto goals, arrows or WASD
 simon|1.0|3789|Games|Memory game using the PC speaker
 hangman|1.0|4604|Games|Guess the computing word
+typing|1.0|3726|Tools|Typing speed test, words per minute
 hexview|1.0|11469|Tools|Hex dump any file on the disk
 textadv|1.0|7988|Tools|The Kernel Escape, a text adventure
 rpncalc|1.0|5237|Tools|Reverse polish calculator

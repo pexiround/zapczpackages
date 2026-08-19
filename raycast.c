@@ -131,7 +131,7 @@ int main() {
     ang = 0;
 
     print_line("Raycaster -- a first-person maze on your own OS.");
-    print_line("arrows move/turn, esc quits");
+    print_line("arrows or WASD move/turn, esc quits");
 
     render();
     for (;;) {
@@ -139,6 +139,10 @@ int main() {
         if (k == 27) break;
         int dx = icos(ang) >> 3;
         int dy = isin(ang) >> 3;
+        if (k == 119 || k == 87) k = 200;      /* w */
+        else if (k == 115 || k == 83) k = 201; /* s */
+        else if (k == 97 || k == 65) k = 202;  /* a */
+        else if (k == 100 || k == 68) k = 203; /* d */
         if (k == 200) {
             if (can_walk(px + dx * 2, py)) px = px + dx;
             if (can_walk(px, py + dy * 2)) py = py + dy;

@@ -61,12 +61,16 @@ int main() {
     maxit = 60;
 
     print_line("Mandelbrot explorer -- fixed point, no FPU.");
-    print_line("arrows pan, +/- zoom, [ ] detail, r reset, esc quit");
+    print_line("arrows/WASD pan, +/- zoom, [ ] detail, r reset, esc quit");
     render();
 
     for (;;) {
         int k = get_key();
         if (k == 27) break;
+        if (k == 119 || k == 87) k = 200;
+        else if (k == 115 || k == 83) k = 201;
+        else if (k == 97 || k == 65) k = 202;
+        else if (k == 100 || k == 68) k = 203;
         int step = zoom / 8;
         if (k == 202) cx = cx - step;
         else if (k == 203) cx = cx + step;
