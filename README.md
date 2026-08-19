@@ -73,10 +73,12 @@ Limits are 64 KB of code and 16 KB of data per package.
 | name | category | what it does |
 |------|----------|--------------|
 | hello | Template | Starter template listing every builtin |
-| raycast | Graphics | First-person maze raycaster, arrows or WASD |
+| raycast | Graphics | Textured maze crawler with sprites, minimap and HUD |
 | mandel | Graphics | Mandelbrot explorer, pan and zoom, no FPU |
 | plasma | Graphics | Animated demoscene plasma effect |
 | fire | Graphics | Classic demoscene fire effect |
+| tunnel | Graphics | Polar tunnel, precomputed distance and angle maps |
+| matrix | Graphics | Falling green code rain |
 | stars | Graphics | Starfield flythrough, W/S changes speed |
 | sortviz | Graphics | Sorting algorithm visualizer with stats |
 | maze | Graphics | Maze generator plus breadth-first solver |

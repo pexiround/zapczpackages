@@ -2,10 +2,12 @@
 # name|version|size|category|description
 
 hello|1.0|2316|Template|Starter template listing every builtin
-raycast|1.1|8378|Graphics|First-person maze raycaster, arrows or WASD
+raycast|2.0|21993|Graphics|Textured maze crawler with sprites, minimap and HUD
 mandel|1.1|4402|Graphics|Mandelbrot explorer, pan and zoom, no FPU
 plasma|1.0|3098|Graphics|Animated demoscene plasma effect
-fire|1.0|13024|Graphics|Classic demoscene fire effect
+fire|1.1|13024|Graphics|Classic demoscene fire effect
+tunnel|1.0|18271|Graphics|Polar tunnel, precomputed distance and angle maps
+matrix|1.0|4385|Graphics|Falling green code rain
 stars|1.0|5249|Graphics|Starfield flythrough, W/S changes speed
 sortviz|1.0|4978|Graphics|Sorting algorithm visualizer with stats
 maze|1.0|20119|Graphics|Maze generator plus breadth-first solver
