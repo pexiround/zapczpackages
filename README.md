@@ -92,3 +92,4 @@ Limits are 64 KB of code and 16 KB of data per package.
 | textadv | Tools | The Kernel Escape, a text adventure |
 | rpncalc | Tools | Reverse polish calculator |
 | sysbench | Tools | Benchmark ZapCC generated code |
+| TaskbarStudio | Tools | Taskbar Customization |
