@@ -21,4 +21,4 @@ hexview|1.0|11469|Tools|Hex dump any file on the disk
 textadv|1.0|7988|Tools|The Kernel Escape, a text adventure
 rpncalc|1.0|5237|Tools|Reverse polish calculator
 sysbench|1.0|8053|Tools|Benchmark ZapCC generated code
-taskbar|1.0|16216|Utilities|Taskbar Studio: live ZapczOS taskbar editor
+taskbar|1.0|21126|Utilities|Taskbar Studio: live ZapczOS taskbar editor

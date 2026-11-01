@@ -1,7 +1,8 @@
 /* Taskbar Studio for ZapczOS -- live taskbar editor (port of the Windows app)
-   up/down pick a setting, left/right change it ([ and ] move by 10)
-   1-6 presets, O original, D default, F1-F4 load slot, F5-F8 save slot
-   enter saves to disk, esc saves and quits */
+   mouse: click or drag the sliders, click < > on the choices, click presets, slots and Save
+   keys: up/down pick a setting, left/right change it ([ and ] move by 10)
+   1-6 presets, O original, D default, F1-F4 load slot, F5-F8 save slot, Enter save
+   changes are saved as you make them */
 
 int rid[15] = {0,1,3,4,2,5,14,6,7,8,9,10,11,12,13};
 int lo[15] = {36,15,0,50,4,0,0,0,0,0,0,0,0,0,0};
@@ -25,6 +26,7 @@ char msg[24];
 char nb[12];
 char vb[20];
 int sel = 0;
+int dirty = 0;
 
 
 int APPS[4] = {2, 8, 4, 10};
@@ -119,6 +121,37 @@ void adjust(int r, int d) {
     if (id >= 7 && id <= 9) { v[6] = 1; }
     if (id >= 11 && id <= 13) { v[10] = 1; }
     apply();
+}
+
+void setval(int id, int nv) {
+    nv = clampv(id, nv);
+    if (nv == v[id]) return;
+    v[id] = nv;
+    if (id >= 7 && id <= 9) { v[6] = 1; }
+    if (id >= 11 && id <= 13) { v[10] = 1; }
+    apply();
+    dirty = 1;
+}
+
+/* choices (position, indicator, colour modes) step and wrap around */
+void bump(int r, int d) {
+    int id = rid[r];
+    int nv = v[id] + d;
+    if (nv > hi[id]) nv = lo[id];
+    if (nv < lo[id]) nv = hi[id];
+    v[id] = nv;
+    apply();
+    dirty = 1;
+}
+
+int is_enum(int id) {
+    if (id == 2 || id == 6 || id == 14 || id == 10) return 1;
+    return 0;
+}
+
+int hit_row(int mx, int my) {
+    if (mx < 18 || mx > 476 || my < 56 || my >= 56 + 15 * 21) return -1;
+    return (my - 56) / 21;
 }
 
 void use_preset(int p) {
@@ -262,21 +295,69 @@ void draw() {
     T("O  Original", 512, 212, 255, 214, 120);
     T("D  Default", 512, 232, 255, 214, 120);
     T("Slots", 512, 262, 76, 194, 255);
-    T("F1-F4 load", 512, 284, 200, 206, 220);
-    T("F5-F8 save", 512, 304, 200, 206, 220);
+    T("Load", 512, 284, 200, 206, 220);
+    T("Save", 512, 308, 200, 206, 220);
     for (k = 0; k < 4; k++) {
-        if (used[k]) canvas_rrect(654 + k * 26, 286, 20, 12, 5, 120, 220, 140);
-        else canvas_rrect(654 + k * 26, 286, 20, 12, 5, 50, 56, 74);
+        if (used[k]) canvas_rrect(590 + k * 34, 282, 28, 20, 6, 70, 150, 92);
+        else canvas_rrect(590 + k * 34, 282, 28, 20, 6, 50, 56, 74);
+        canvas_rrect(590 + k * 34, 306, 28, 20, 6, 50, 56, 74);
+        T(numstr(k + 1), 600 + k * 34, 284, 235, 238, 246);
+        T(numstr(k + 1), 600 + k * 34, 308, 235, 238, 246);
     }
-    T("Enter  save", 512, 340, 110, 118, 140);
-    T("Esc  save and quit", 512, 358, 110, 118, 140);
+    canvas_rrect(512, 336, 110, 26, 7, 38, 70, 104);
+    T("Save now", 528, 341, 235, 238, 246);
+    T("Esc  close", 640, 341, 110, 118, 140);
     T("Preview", 16, 376, 76, 194, 255);
     preview();
+}
+
+void do_original() {
+    int i;
+    for (i = 0; i < 15; i++) v[i] = org[i];
+    apply();
+    setmsg("Original restored");
+    dirty = 1;
+}
+
+void do_default() {
+    int i;
+    for (i = 0; i < 15; i++) v[i] = DEF[i];
+    apply();
+    setmsg("Defaults");
+    dirty = 1;
+}
+
+void do_load(int s) {
+    int i;
+    if (s < 0 || s > 3) return;
+    if (used[s]) {
+        for (i = 0; i < 15; i++) v[i] = slot[s * 15 + i];
+        apply();
+        setmsg("Slot loaded");
+        dirty = 1;
+    } else setmsg("Slot empty");
+}
+
+void do_save(int s) {
+    int i;
+    if (s < 0 || s > 3) return;
+    for (i = 0; i < 15; i++) slot[s * 15 + i] = v[i];
+    used[s] = 1;
+    fsave();
+    setmsg("Slot saved");
 }
 
 int main() {
     int k;
     int i;
+    int mx;
+    int my;
+    int mb;
+    int pmb = 0;
+    int drag = -1;
+    int ch;
+    int r;
+    int id;
     canvas_init(780, 520);
     sync_in();
     if (!fload()) {
@@ -287,46 +368,66 @@ int main() {
     draw();
     canvas_present();
     while (1) {
-        k = get_key();
-        if (k == 27) break;
-        if (k == 200 && sel > 0) sel--;
-        if (k == 201 && sel < 14) sel++;
-        if (k == 202) adjust(sel, -1);
-        if (k == 203) adjust(sel, 1);
-        if (k == '[') adjust(sel, -10);
-        if (k == ']') adjust(sel, 10);
-        if (k >= '1' && k <= '6') { use_preset(k - '1'); setmsg("Preset applied"); }
-        if (k == 'o' || k == 'O') {
-            for (i = 0; i < 15; i++) v[i] = org[i];
-            apply();
-            setmsg("Original restored");
+        ch = 0;
+        k = key_down();
+        if (k) {
+            ch = 1;
+            if (k == 27) break;
+            if (k == 200 && sel > 0) sel--;
+            if (k == 201 && sel < 14) sel++;
+            if (k == 202) { if (is_enum(rid[sel])) bump(sel, -1); else adjust(sel, -1); dirty = 1; }
+            if (k == 203) { if (is_enum(rid[sel])) bump(sel, 1); else adjust(sel, 1); dirty = 1; }
+            if (k == '[') { adjust(sel, -10); dirty = 1; }
+            if (k == ']') { adjust(sel, 10); dirty = 1; }
+            if (k >= '1' && k <= '6') { use_preset(k - '1'); setmsg("Preset applied"); dirty = 1; }
+            if (k == 'o' || k == 'O') { do_original(); }
+            if (k == 'd' || k == 'D') { do_default(); }
+            if (k >= 205 && k <= 208) { do_load(k - 205); }
+            if (k >= 209 && k <= 212) { do_save(k - 209); }
+            if (k == 10) { fsave(); dirty = 0; setmsg("Saved"); }
         }
-        if (k == 'd' || k == 'D') {
-            for (i = 0; i < 15; i++) v[i] = DEF[i];
-            apply();
-            setmsg("Defaults");
+        mx = mouse_x();
+        my = mouse_y();
+        mb = mouse_btn();
+        if (mx >= 0 && my >= 0 && drag < 0) {
+            r = hit_row(mx, my);
+            if (r >= 0 && r != sel) { sel = r; ch = 1; }
         }
-        if (k >= 205 && k <= 208) {
-            int s = k - 205;
-            if (used[s]) {
-                for (i = 0; i < 15; i++) v[i] = slot[s * 15 + i];
-                apply();
-                setmsg("Slot loaded");
-            } else setmsg("Slot empty");
+        if (mb && !pmb && mx >= 0 && my >= 0) {
+            ch = 1;
+            r = hit_row(mx, my);
+            if (r >= 0) {
+                sel = r;
+                id = rid[r];
+                if (is_enum(id)) {
+                    if (mx >= 142 && mx < 170) bump(r, -1);
+                    else if (mx >= 170 && mx < 270) bump(r, 1);
+                } else if (mx >= 140 && mx <= 362) {
+                    drag = r;
+                }
+            }
+            if (mx >= 508 && mx < 740) {
+                if (my >= 82 && my < 202) { use_preset((my - 82) / 20); setmsg("Preset applied"); dirty = 1; }
+                if (my >= 208 && my < 228) { do_original(); }
+                if (my >= 228 && my < 248) { do_default(); }
+            }
+            if (mx >= 590 && mx < 726) {
+                if (my >= 280 && my < 304) { do_load((mx - 590) / 34); }
+                if (my >= 304 && my < 328) { do_save((mx - 590) / 34); }
+            }
+            if (mx >= 512 && mx < 622 && my >= 336 && my < 362) { fsave(); dirty = 0; setmsg("Saved"); }
         }
-        if (k >= 209 && k <= 212) {
-            int s = k - 209;
-            for (i = 0; i < 15; i++) slot[s * 15 + i] = v[i];
-            used[s] = 1;
-            fsave();
-            setmsg("Slot saved");
+        if (mb && drag >= 0 && mx >= 0) {
+            id = rid[drag];
+            setval(id, lo[id] + (mx - 150) * (hi[id] - lo[id]) / 200);
+            ch = 1;
         }
-        if (k == 10) {
-            fsave();
-            setmsg("Saved");
-        }
-        draw();
+        if (!mb) drag = -1;
+        pmb = mb;
+        if (dirty && !mb) { fsave(); dirty = 0; }
+        if (ch) draw();
         canvas_present();
+        sleep(10);
     }
     fsave();
     return 0;
