@@ -21,7 +21,6 @@ int v[15];
 int org[15];
 int slot[60];
 int used[4];
-char fb[96];
 char msg[24];
 char nb[12];
 char vb[20];
@@ -90,28 +89,27 @@ void apply() {
 
 void setmsg(char *s) { strcpy(msg, s); }
 
+/* the original and the four slots live in the OS's own settings (tb_get/tb_set ids 100+),
+   so this app never creates a file of its own */
 void fsave() {
     int i;
     int k;
-    int m = 0;
+    int m = 128;
     for (k = 0; k < 4; k++) { if (used[k]) m = m + (1 << k); }
-    fb[0] = 'T';
-    fb[1] = 'S';
-    fb[2] = m;
-    for (i = 0; i < 15; i++) fb[3 + i] = org[i];
-    for (i = 0; i < 60; i++) fb[18 + i] = slot[i];
-    file_write("TBSTUDIO.DAT", fb, 78);
+    tb_set(100, m);
+    for (i = 0; i < 15; i++) tb_set(101 + i, org[i]);
+    for (i = 0; i < 60; i++) tb_set(116 + i, slot[i]);
+    tb_save();
 }
 
 int fload() {
-    int n = file_read("TBSTUDIO.DAT", fb, 96);
     int i;
     int k;
-    if (n < 78) return 0;
-    if (fb[0] != 'T' || fb[1] != 'S') return 0;
-    for (k = 0; k < 4; k++) used[k] = (fb[2] >> k) & 1;
-    for (i = 0; i < 15; i++) org[i] = fb[3 + i] & 255;
-    for (i = 0; i < 60; i++) slot[i] = fb[18 + i] & 255;
+    int m = tb_get(100);
+    if (!(m & 128)) return 0;
+    for (k = 0; k < 4; k++) used[k] = (m >> k) & 1;
+    for (i = 0; i < 15; i++) org[i] = tb_get(101 + i);
+    for (i = 0; i < 60; i++) slot[i] = tb_get(116 + i);
     return 1;
 }
 
@@ -324,13 +322,12 @@ int main() {
             setmsg("Slot saved");
         }
         if (k == 10) {
-            tb_save();
             fsave();
             setmsg("Saved");
         }
         draw();
         canvas_present();
     }
-    tb_save();
+    fsave();
     return 0;
 }
